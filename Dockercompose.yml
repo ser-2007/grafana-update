@@ -1,0 +1,53 @@
+version: 3.7
+	services:
+	
+
+	  prometheus:
+	    image: prom/prometheus
+	    container_name: prometheus
+	    ports:
+	      - "8090:9090"
+	    environment:
+	      VIRTUAL_HOST: prometheus.finspire.tech
+	      VIRTUAL_PORT: 8090
+	      LETSENCRYPT_HOST: prometheus.scarlet.tech
+	      LETSENCRYPT_EMAIL: admin@scarlet.com
+	    networks:
+	      - scarlet
+	
+
+	  grafana:
+	    image: grafana/grafana
+	    container_name: grafana
+	    ports:
+	      - "4000:3000"
+	    user: "$UID:$GID"
+	    environment:
+	      VIRTUAL_HOST: grafana.scarlet.tech
+	      VIRTUAL_PORT: 4000
+	      LETSENCRYPT_HOST: grafana.scarlet.tech
+	      LETSENCRYPT_EMAIL: admin@scarlet.com
+	      GF_SECURITY_ADMIN_USER: scarlet_admin
+	      GF_SECURITY_ADMIN_PASSWORD: scarlet@20XX-AROG
+	    networks:
+	      - scarlet
+	
+
+	  cadvisor:
+	    image: gcr.io/cadvisor/cadvisor:latest
+	    container_name: cadvisor
+	    ports:
+	      - 8101:8080
+	    networks:
+	      - scarlet
+	    devices:
+	      - /dev/kmsg
+	
+
+	networks:
+	  finspire:
+	    name: scarlet
+	
+
+	volumes:
+	  prometheus-data:
